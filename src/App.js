@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react"
 import axios from "axios"
 import "bootstrap/dist/css/bootstrap.min.css"
 import {nanoid} from "nanoid"
+import { Link } from 'react-router-dom';
 
 function App() {
   const [data,setData] = useState([])
@@ -74,7 +75,7 @@ function App() {
               <p><span>Body: </span>{post.body}</p>
               <button onClick={()=>updatePost(post.id)}>Update Post</button>
               <button onClick={()=>deletePost(post.id)}>Delete Post</button> 
-              
+              <Link to={`/post/${post.id}`} style={{cursor:"pointer"}}>Details </Link>
             </div>
           )
         })}
