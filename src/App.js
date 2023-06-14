@@ -3,12 +3,12 @@ import React, {useEffect, useState} from "react"
 import axios from "axios"
 import "bootstrap/dist/css/bootstrap.min.css"
 import {nanoid} from "nanoid"
-import { Link } from 'react-router-dom';
+import CreatePost from './components/CreatePost';
+import Posts from './components/Posts';
 
 function App() {
   const [data,setData] = useState([])
-  const [newTitle,setNewTitle] = useState("")
-  const [newBody,setNewBody] = useState("")
+  
   const [show,setShow] = useState(false)
 
   
@@ -21,7 +21,7 @@ function App() {
     }
     fetchPosts();
   },[])
-  const createPost = async () => {
+  const createPost = async (newBody,newTitle,setNewBody,setNewTitle) => {
     const newPost = {
       id: data.legth+1,
       title: newTitle,
@@ -30,9 +30,9 @@ function App() {
     }
     const response = await axios.post(API_URL,newPost)
     const results = await response.data
-    setData([...data,results])
-    setShow(false)
     console.log(results)
+    setData([...data,results])
+    setShow(false) 
     setNewBody("")
     setNewTitle("")
   }
@@ -60,25 +60,8 @@ function App() {
   }
   return (
     <>
-       <div className='header text-center'>
-           <h3>Your Post</h3>
-           {!show?<button className='btn btn-primary mt-3' onClick={()=>setShow(true)}>Create Post</button>:
-           (<div><input type="text" placeholder="Enter Title Text" value={newTitle} onChange={(e)=>setNewTitle(e.target.value)}/>
-           <input type="text" placeholder="Enter Body Text" value={newBody} onChange={(e)=>setNewBody(e.target.value)}/>
-           <button onClick={createPost}>Save</button>
-           </div>)}
-        </div>
-        {data.map((post)=>{
-          return (
-           <div className='text-center border m-3 p-2 post-container' key={post.id}>
-              <p  className="border-none"><span>Title: </span>{post.title}</p>
-              <p><span>Body: </span>{post.body}</p>
-              <button onClick={()=>updatePost(post.id)}>Update Post</button>
-              <button onClick={()=>deletePost(post.id)}>Delete Post</button> 
-              <Link to={`/post/${post.id}`} style={{cursor:"pointer"}}>Details </Link>
-            </div>
-          )
-        })}
+    <CreatePost show={show} setShow={setShow} createPost={createPost}/>
+    <Posts data={data} updatePost={updatePost} deletePost={deletePost} />
     </>
   );
 }
